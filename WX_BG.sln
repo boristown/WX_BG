@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.156
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "WX_BG", "WX_BG.pyproj", "{69AC8627-197B-4C8E-BE3D-2BC1F68A04EC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{69AC8627-197B-4C8E-BE3D-2BC1F68A04EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69AC8627-197B-4C8E-BE3D-2BC1F68A04EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {ED2A47E7-A38A-4F84-AFA8-7D7D2983ABE5}
+	EndGlobalSection
+EndGlobal
