@@ -3,8 +3,6 @@
 import mysql.connector
 import mypsw
 
-print(bg_update())
-
 def bg_update():
     output_text = ''   
     mydb = mysql.connector.connect( 
@@ -12,7 +10,8 @@ def bg_update():
         user=mypsw.wechatadmin.user, 
         passwd=mypsw.wechatadmin.passwd, 
         database=mypsw.wechatadmin.database, 
-        auth_plugin='mysql_native_password' )
+        auth_plugin='mysql_native_password' 
+        )
     mycursor = mydb.cursor()
     select_alias_statment = "SELECT DISTINCT symbol FROM symbol_alias"
     mycursor.execute(select_alias_statment)
@@ -23,3 +22,5 @@ def bg_update():
     for alias_result in alias_results:
         print(alias_result[0])
     return 'success'
+
+print(bg_update())
