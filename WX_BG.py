@@ -44,7 +44,7 @@ def bg_update():
     time.sleep(0.5)
     symbol_index = 0
     #list_filename = os.path.join('Output/WX/list-' + markets[mode] + '.txt')
-    price_filename = os.path.join('Output/WX/price-WX_' + datetime.datetime.utcnow().strftime("%Y%m%d") + '.csv')
+    price_filename = os.path.join('Output/prices/price-WX_' + datetime.datetime.utcnow().strftime("%Y%m%d") + '.csv')
     #reversed_filename = os.path.join('Output/WX/reversed-WX_' + datetime.datetime.utcnow().strftime("%Y%m%d") + '.csv')
     #list_file = open(list_filename, "w", encoding="utf-8")
     price_file = open(price_filename, "w", encoding="utf-8")
