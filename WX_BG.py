@@ -9,7 +9,7 @@ import datetime
 import time
 
 def bg_update():
-    output_text = ''   
+    output_text = '' 
     mydb = mysql.connector.connect(host=mypsw.wechatadmin.host, 
         user=mypsw.wechatadmin.user, 
         passwd=mypsw.wechatadmin.passwd, 
@@ -26,11 +26,11 @@ def bg_update():
     startdays = 200
     inputdays = 120
 
-    url = "https://www.investing.com/instruments/HistoricalDataAjax"
+    url = "https://cn.investing.com/instruments/HistoricalDataAjax"
 
     headers = {
         'accept': "text/plain, */*; q=0.01",
-        'origin': "https://www.investing.com",
+        'origin': "https://cn.investing.com",
         'x-requested-with': "XMLHttpRequest",
         'user-agent': "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36",
         'content-type': "application/x-www-form-urlencoded",
@@ -38,11 +38,20 @@ def bg_update():
         'postman-token': "17db1643-3ef6-fa9e-157b-9d5058f391e4"
         }
 
-    st_date_str = (datetime.datetime.utcnow() + datetime.timedelta(days = -startdays)).strftime("%m-%d-%Y").replace("-","%2F")
-    end_date_str = (datetime.datetime.utcnow()).strftime("%m-%d-%Y").replace("-","%2F")
+    st_date_str = (datetime.datetime.utcnow() + datetime.timedelta(days = -startdays)).strftime("%Y-%m-%d").replace("-","%2F")
+    end_date_str = (datetime.datetime.utcnow()).strftime("%Y-%m-%d").replace("-","%2F")
     
     time.sleep(0.5)
-    
+    symbol_index = 0
+    #list_filename = os.path.join('Output/WX/list-' + markets[mode] + '.txt')
+    price_filename = os.path.join('Output/WX/price-WX_' + datetime.datetime.utcnow().strftime("%Y%m%d") + '.csv')
+    reversed_filename = os.path.join('Output/WX/reversed-WX_' + datetime.datetime.utcnow().strftime("%Y%m%d") + '.csv')
+    #list_file = open(list_filename, "w", encoding="utf-8")
+    price_file = open(price_filename, "w", encoding="utf-8")
+    reversed_file = open(reversed_filename, "w", encoding="utf-8")
+    #list_file.truncate()
+    price_file.truncate()
+    reversed_file.truncate()
     for alias_result in alias_results:
         payload = "action=historical_data&curr_id="+ alias_result[0] +"&end_date=" + end_date_str + "&header=null&interval_sec=Daily&smlID=&sort_col=date&sort_ord=DESC&st_date=" + st_date_str
         while True:
@@ -71,7 +80,41 @@ def bg_update():
         if len(price_list) != inputdays:
             print(len(price_list))
             continue
+        max_price = max(price_list)
+        min_price = min(price_list)
+        center_price = (max_price + min_price) / 2
+        range_price = max_price - min_price
+        if range_price <= 0:
+            continue
+        symbol_index+=1
+        if symbol_index > 1:
+            #list_file.write("\n")
+            price_file.write("\n")
+            reversed_file.write("\n")
+        #list_file.write(marketName + "\t" + symbol_str)
+        price_line = ""
+        reversed_line = ""
+        print( "%d\t%s\t%s" % (symbol_index, curr_id_str, symbol_str)  )
+        for i in range(len(price_list)):
+            price_list[i] -= center_price
+            price_list[i] /= range_price
+            price_list[i] += 0.5
+            if price_list[i] > 0.99999:
+                price_list[i] = 1.0
+            elif price_list[i] < 0.00001:
+                price_list[i] = 0.0
+            if price_line != "":
+                price_line += ","
+                reversed_line = "," + reversed_line
+            price_line += str(price_list[i])
+            reversed_line = str(price_list[i]) + reversed_line
+        price_file.write(price_line)
+        reversed_file.write(reversed_line)
+        #print(price_line)
         print(price_list)
+    #list_file.close()
+    price_file.close()
+    reversed_file.close()
     return 'success'
 
 print(bg_update())
