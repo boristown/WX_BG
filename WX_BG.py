@@ -26,11 +26,11 @@ def bg_update():
     startdays = 200
     inputdays = 120
 
-    url = "https://cn.investing.com/instruments/HistoricalDataAjax"
+    url = "https://www.investing.com/instruments/HistoricalDataAjax"
 
     headers = {
         'accept': "text/plain, */*; q=0.01",
-        'origin': "https://cn.investing.com",
+        'origin': "https://www.investing.com",
         'x-requested-with': "XMLHttpRequest",
         'user-agent': "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36",
         'content-type': "application/x-www-form-urlencoded",
@@ -38,8 +38,8 @@ def bg_update():
         'postman-token': "17db1643-3ef6-fa9e-157b-9d5058f391e4"
         }
 
-    st_date_str = (datetime.datetime.utcnow() + datetime.timedelta(days = -startdays)).strftime("%Y-%m-%d").replace("-","%2F")
-    end_date_str = (datetime.datetime.utcnow()).strftime("%Y-%m-%d").replace("-","%2F")
+    st_date_str = (datetime.datetime.utcnow() + datetime.timedelta(days = -startdays)).strftime("%m-%d-%Y").replace("-","%2F")
+    end_date_str = (datetime.datetime.utcnow()).strftime("%m-%d-%Y").replace("-","%2F")
     
     time.sleep(0.5)
     symbol_index = 0
@@ -94,7 +94,7 @@ def bg_update():
         #list_file.write(marketName + "\t" + symbol_str)
         price_line = ""
         reversed_line = ""
-        print( "%d\t%s\t%s" % (symbol_index, curr_id_str, symbol_str)  )
+        print( "%d\t%s" % (symbol_index, alias_result[0])  )
         for i in range(len(price_list)):
             price_list[i] -= center_price
             price_list[i] /= range_price
