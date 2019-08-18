@@ -45,13 +45,13 @@ def bg_update():
     symbol_index = 0
     #list_filename = os.path.join('Output/WX/list-' + markets[mode] + '.txt')
     price_filename = os.path.join('Output/WX/price-WX_' + datetime.datetime.utcnow().strftime("%Y%m%d") + '.csv')
-    reversed_filename = os.path.join('Output/WX/reversed-WX_' + datetime.datetime.utcnow().strftime("%Y%m%d") + '.csv')
+    #reversed_filename = os.path.join('Output/WX/reversed-WX_' + datetime.datetime.utcnow().strftime("%Y%m%d") + '.csv')
     #list_file = open(list_filename, "w", encoding="utf-8")
     price_file = open(price_filename, "w", encoding="utf-8")
-    reversed_file = open(reversed_filename, "w", encoding="utf-8")
+    #reversed_file = open(reversed_filename, "w", encoding="utf-8")
     #list_file.truncate()
     price_file.truncate()
-    reversed_file.truncate()
+    #reversed_file.truncate()
     for alias_result in alias_results:
         payload = "action=historical_data&curr_id="+ alias_result[0] +"&end_date=" + end_date_str + "&header=null&interval_sec=Daily&smlID=&sort_col=date&sort_ord=DESC&st_date=" + st_date_str
         while True:
@@ -90,10 +90,10 @@ def bg_update():
         if symbol_index > 1:
             #list_file.write("\n")
             price_file.write("\n")
-            reversed_file.write("\n")
+            #reversed_file.write("\n")
         #list_file.write(marketName + "\t" + symbol_str)
         price_line = ""
-        reversed_line = ""
+        #reversed_line = ""
         print( "%d\t%s" % (symbol_index, alias_result[0])  )
         for i in range(len(price_list)):
             price_list[i] -= center_price
@@ -105,16 +105,16 @@ def bg_update():
                 price_list[i] = 0.0
             if price_line != "":
                 price_line += ","
-                reversed_line = "," + reversed_line
+                #reversed_line = "," + reversed_line
             price_line += str(price_list[i])
-            reversed_line = str(price_list[i]) + reversed_line
+            #reversed_line = str(price_list[i]) + reversed_line
         price_file.write(price_line)
-        reversed_file.write(reversed_line)
+        #reversed_file.write(reversed_line)
         #print(price_line)
         print(price_list)
     #list_file.close()
     price_file.close()
-    reversed_file.close()
+    #reversed_file.close()
     return 'success'
 
 print(bg_update())
