@@ -26,12 +26,18 @@ def get_prediction(symbol_id_list, prediction_file):
             "%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
         insert_val = []
-        for row_index, row in enumerate(csvreader):
+        row_index = 0
+        for row in csvreader:
             insert_val.append = (
                                  symbol_id_list[row_index], 
                                  datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
                                  row[1], row[3], row[5], row[7], row[9], row[11], row[13], row[15], row[17], row[19]
                                  )
+            row_index += 1
+
+        if len(insert_val) == 0:
+            print("读取预测结果失败！")
+            return None
 
         mycursor.executemany(insert_sql, insert_val)
 

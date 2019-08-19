@@ -24,3 +24,4 @@ while True:
     if len(predict_files) == 0:
         continue
     prediction.get_prediction(symbol_id_list, predict_files[0])
+    break
