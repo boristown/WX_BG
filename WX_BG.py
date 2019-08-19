@@ -4,6 +4,7 @@ import prices
 import glob
 import prediction
 import os
+import time
 
 #预测数据文件
 predict_file_pattern = "Output/predict/predict-*.csv"
@@ -20,6 +21,6 @@ symbol_id_list = prices.read_prices()
 while True:
     time.sleep(10)
     predict_files  = glob.glob(predict_file_pattern)
-    if len(price_files) == 0:
+    if len(predict_files) == 0:
         continue
-    prediction.get_prediction(symbol_id_list, price_files[0])
+    prediction.get_prediction(symbol_id_list, predict_files[0])
