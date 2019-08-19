@@ -4,20 +4,24 @@ import mysql.connector
 import csv
 import mypsw
 import datetime
+import time
 
 def get_prediction(symbol_id_list, prediction_file):
     with open(prediction_file,"r") as fcsv:
-        csvreader = csv.reader(fcsv,delimiter = ",")
+        csvreader = csv.reader(fcsv)
         prices_batch_size = len(symbol_id_list)
-
         insert_val = []
         predict_index = 0
+        print("准备读取预测结果……")
+        time.sleep(5)
+        #for linetext in fcsv:
         for row in csvreader:
-            insert_val.append = (
+            #row = linetext.split(',')
+            insert_val.append((
                                  symbol_id_list[predict_index], 
                                  datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
                                  row[1], row[3], row[5], row[7], row[9], row[11], row[13], row[15], row[17], row[19]
-                                 )
+                                 ))
             predict_index += 1
 
         if predict_index != prices_batch_size:

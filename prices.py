@@ -38,7 +38,7 @@ def read_prices():
         }
 
     st_date_str = (datetime.datetime.utcnow() + datetime.timedelta(days = -startdays)).strftime("%Y-%m-%d").replace("-","%2F")
-    end_date_str = (datetime.datetime.utcnow()).strftime("%Y-%m-%d").replace("-","%2F")
+    end_date_str = (datetime.datetime.utcnow() + datetime.timedelta(days = -1)).strftime("%Y-%m-%d").replace("-","%2F")
     
     time.sleep(0.5)
     symbol_index = 0

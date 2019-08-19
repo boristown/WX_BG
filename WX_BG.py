@@ -7,9 +7,9 @@ import os
 import time
 
 #预测数据文件
-prices_file_pattern = "Output/prices/*.csv"
+prices_file_pattern = "Output\\prices\\*.csv"
 #预测数据文件
-predict_file_pattern = "Output/predict/*.csv"
+predict_file_pattern = "Output\\predict\\*.csv"
 
 #删除旧的价格数据
 prices_files  = glob.glob(prices_file_pattern)
@@ -31,6 +31,7 @@ while True:
     predict_files  = glob.glob(predict_file_pattern)
     if len(predict_files) == 0:
         continue
-    time.sleep(3)
+    print("检测到预测文件：", predict_files[0])
+    time.sleep(5)
     prediction.get_prediction(symbol_id_list, predict_files[0])
     break
