@@ -7,7 +7,14 @@ import os
 import time
 
 #预测数据文件
-predict_file_pattern = "Output/predict/predict-*.csv"
+prices_file_pattern = "Output/prices/*.csv"
+#预测数据文件
+predict_file_pattern = "Output/predict/*.csv"
+
+#删除旧的价格数据
+prices_files  = glob.glob(prices_file_pattern)
+for prices_file in prices_files:
+    os.remove(prices_file)
 
 #删除旧的预测数据
 predict_files  = glob.glob(predict_file_pattern)
