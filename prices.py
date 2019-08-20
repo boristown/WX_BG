@@ -38,17 +38,18 @@ def read_prices():
         }
 
     st_date_str = (datetime.datetime.utcnow() + datetime.timedelta(days = -startdays)).strftime("%Y-%m-%d").replace("-","%2F")
-    end_date_str = (datetime.datetime.utcnow() + datetime.timedelta(days = -1)).strftime("%Y-%m-%d").replace("-","%2F")
+    end_date_str = (datetime.datetime.utcnow()).strftime("%Y-%m-%d").replace("-","%2F")
     
     time.sleep(0.5)
     symbol_index = 0
-    price_filename = os.path.join('Output/prices/price-WX_' + datetime.datetime.utcnow().strftime("%Y%m%d") + '.csv')
-    price_file = open(price_filename, "w", encoding="utf-8")
+    time_text =  datetime.datetime.utcnow().strftime("%Y%m%d")
+    price_filename_txt = os.path.join('Output/prices/part-WX_' + time_text + '.txt')
+    price_filename_csv = os.path.join('Output/prices/price-WX_' + time_text + '.csv')
+    price_file = open(price_filename_txt, "w", encoding="utf-8")
     price_file.truncate()
     symbol_id_list = []
     for alias_result in alias_results:
-        symbol_id_list.append(alias_result[0])
-        payload = "action=historical_data&curr_id="+ alias_result[0] +"&end_date=" + end_date_str + "&header=null&interval_sec=Daily&smlID=&sort_col=date&sort_ord=DESC&st_date=" + st_date_str
+        payload = "action=historical_data&curr_id="+ alias_result[0] +"&end_date=" + end_date_str + "&header=null&interval_sec=Daily&smlID=25674343&sort_col=date&sort_ord=DESC&st_date=" + st_date_str
         while True:
             try:
                 response = requests.request("POST", url, data=payload, headers=headers, verify=False)
@@ -75,6 +76,8 @@ def read_prices():
         if len(price_list) != inputdays:
             print(len(price_list))
             continue
+        symbol_id_list.append(alias_result[0])
+        print(price_list)
         max_price = max(price_list)
         min_price = min(price_list)
         center_price = (max_price + min_price) / 2
@@ -100,5 +103,7 @@ def read_prices():
         price_file.write(price_line)
         print(price_list)
     price_file.close()
+    os.rename(price_filename_txt, price_filename_csv)
+
 
     return symbol_id_list
