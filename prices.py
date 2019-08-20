@@ -101,9 +101,8 @@ def read_prices():
                 price_line += ","
             price_line += str(price_list[i])
         price_file.write(price_line)
-        print(price_list)
+        #print(price_list)
     price_file.close()
     os.rename(price_filename_txt, price_filename_csv)
-
 
     return symbol_id_list
