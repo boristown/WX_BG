@@ -25,6 +25,7 @@ time.sleep(3)
 #读取价格并生成输入数据
 symbol_id_list = prices.read_prices()
 
+print("正在执行预测……")
 # 预测并读取结果 
 while True:
     time.sleep(1)
@@ -32,6 +33,6 @@ while True:
     if len(predict_files) == 0:
         continue
     print("检测到预测文件：", predict_files[0])
-    time.sleep(30)
+    time.sleep(3)
     prediction.get_prediction(symbol_id_list, predict_files[0])
     break
