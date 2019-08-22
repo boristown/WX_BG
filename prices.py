@@ -49,14 +49,17 @@ def read_prices():
     price_file.truncate()
     symbol_id_list = []
     for alias_result in alias_results:
-        payload = "action=historical_data&curr_id="+ alias_result[0] +"&end_date=" + end_date_str + "&header=null&interval_sec=Daily&smlID=25674343&sort_col=date&sort_ord=DESC&st_date=" + st_date_str
-        while True:
+        payload = "action=historical_data&curr_id="+ alias_result[0] +"&end_date=" + end_date_str + "&header=null&interval_sec=Daily&smlID=25609848&sort_col=date&sort_ord=DESC&st_date=" + st_date_str
+        response = None
+        for response_index in range(3):
             try:
                 response = requests.request("POST", url, data=payload, headers=headers, verify=False)
                 break
             except:
                 print("Retry after 7 seconds……")
-                time.sleep(3)
+                time.sleep(7)
+        if response == None:
+            continue
         table_pattern = r'<tr>.+?<td.+?data-real-value="([^><"]+?)".+?</td>' \
             '.+?data-real-value="([^><"]+?)".+?</td>.+?data-real-value="([^><"]+?)".+?</td>'  \
             '.+?data-real-value="([^><"]+?)".+?</td>.+?data-real-value="([^><"]+?)".+?</td>'  \

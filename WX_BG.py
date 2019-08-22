@@ -38,4 +38,4 @@ while True:
         prediction.get_prediction(symbol_id_list, predict_files[0])
         break
     print("预测执行完毕！")
-    time.sleep(3600)
+    time.sleep(1800)
