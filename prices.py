@@ -15,7 +15,7 @@ def read_prices():
         database=mypsw.wechatadmin.database, 
         auth_plugin='mysql_native_password')
     mycursor = mydb.cursor()
-    select_alias_statment = "SELECT DISTINCT symbol FROM symbol_alias"
+    select_alias_statment = "SELECT DISTINCT symbol FROM symbol_alias order by RAND()"
     mycursor.execute(select_alias_statment)
     alias_results = mycursor.fetchall()
     if len(alias_results) == 0:
@@ -40,7 +40,6 @@ def read_prices():
     st_date_str = (datetime.datetime.utcnow() + datetime.timedelta(days = -startdays)).strftime("%Y-%m-%d").replace("-","%2F")
     end_date_str = (datetime.datetime.utcnow()).strftime("%Y-%m-%d").replace("-","%2F")
     
-    time.sleep(0.5)
     symbol_index = 0
     time_text =  datetime.datetime.utcnow().strftime("%Y%m%d")
     price_filename_txt = os.path.join('Output/prices/part-WX_' + time_text + '.txt')
@@ -51,13 +50,15 @@ def read_prices():
     for alias_result in alias_results:
         payload = "action=historical_data&curr_id="+ alias_result[0] +"&end_date=" + end_date_str + "&header=null&interval_sec=Daily&smlID=25609848&sort_col=date&sort_ord=DESC&st_date=" + st_date_str
         response = None
-        for response_index in range(3):
-            try:
-                response = requests.request("POST", url, data=payload, headers=headers, verify=False)
-                break
-            except:
-                print("Retry after 7 seconds……")
-                time.sleep(7)
+        #for response_index in range(2):
+        try:
+            time.sleep(1)
+            response = requests.request("POST", url, data=payload, headers=headers, verify=False, timeout=40)
+            #break
+        except:
+            break
+            print("Retry after 7 seconds……")
+            time.sleep(7)
         if response == None:
             continue
         table_pattern = r'<tr>.+?<td.+?data-real-value="([^><"]+?)".+?</td>' \
