@@ -47,7 +47,18 @@ def get_prediction(symbol_id_list, prediction_file):
         insert_sql = "INSERT INTO predictions ("  \
             "SYMBOL, TIME, DAY01, DAY02, DAY03, DAY04,  DAY05, DAY06, DAY07, DAY08, DAY09, DAY10" \
             ") VALUES (" \
-            "%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            "%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)" \
+            "ON DUPLICATE KEY UPDATE TIME=VALUES(TIME)," \
+            "DAY01=VALUES(DAY01)," \
+            "DAY02=VALUES(DAY02)," \
+            "DAY03=VALUES(DAY03)," \
+            "DAY04=VALUES(DAY04)," \
+            "DAY05=VALUES(DAY05)," \
+            "DAY06=VALUES(DAY06)," \
+            "DAY07=VALUES(DAY07)," \
+            "DAY08=VALUES(DAY08)," \
+            "DAY09=VALUES(DAY09)," \
+            "DAY10=VALUES(DAY10)" \
 
         mycursor.executemany(insert_sql, insert_val)
 
