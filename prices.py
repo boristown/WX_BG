@@ -56,7 +56,7 @@ def read_prices():
         response = None
         #for response_index in range(2):
         try:
-            time.sleep(1)
+            #time.sleep(0.3)
             response = requests.request("POST", url, data=payload, headers=headers, verify=False, timeout=40)
             #break
         except:
@@ -72,6 +72,7 @@ def read_prices():
         row_matchs = re.finditer(table_pattern,response.text,re.S)
         price_list = []
         price_count = 0
+        insert_val = []
         for cell_matchs in row_matchs:
             price_count += 1
             if price_count > inputdays:
@@ -79,11 +80,24 @@ def read_prices():
             price = float(str(cell_matchs.group(2)).replace(",",""))
             if price_count == 1 or price != price_list[price_count-2]:
                 price_list.append(price)
+                insert_val.append((alias_result[0], inputdays - price_count + 1, price))
             else:
                 price_count -= 1
         if len(price_list) != inputdays:
             print(len(price_list))
             continue
+        insert_val.reverse()
+
+        insert_sql = "INSERT INTO prices ("  \
+            "SYMBOL, DAY_INDEX, PRICE" \
+            ") VALUES (" \
+            "%s, %s, %s) " \
+            "ON DUPLICATE KEY UPDATE DAY_INDEX=VALUES(DAY_INDEX),PRICE=VALUES(PRICE)"
+
+        mycursor.executemany(insert_sql, insert_val)
+
+        mydb.commit()    # 数据表内容有更新，必须使用到该语句
+
         symbol_id_list.append(alias_result[0])
         print(price_list)
         max_price = max(price_list)

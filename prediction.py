@@ -49,7 +49,6 @@ def get_prediction(symbol_id_list, prediction_file):
             ") VALUES (" \
             "%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
-
         mycursor.executemany(insert_sql, insert_val)
 
         mydb.commit()    # 数据表内容有更新，必须使用到该语句
