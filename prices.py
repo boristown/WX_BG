@@ -9,12 +9,16 @@ import datetime
 import time
 
 def read_prices():
-    mydb = mysql.connector.connect(host=mypsw.wechatadmin.host, 
-        user=mypsw.wechatadmin.user, 
-        passwd=mypsw.wechatadmin.passwd, 
-        database=mypsw.wechatadmin.database, 
-        auth_plugin='mysql_native_password')
-    mycursor = mydb.cursor()
+    try:
+        mydb = mysql.connector.connect(host=mypsw.wechatadmin.host, 
+            user=mypsw.wechatadmin.user, 
+            passwd=mypsw.wechatadmin.passwd, 
+            database=mypsw.wechatadmin.database, 
+            auth_plugin='mysql_native_password')
+        mycursor = mydb.cursor()
+    except:
+        print("数据库连接失败！")
+        return None
     select_alias_statment = "SELECT DISTINCT symbol FROM symbol_alias order by RAND()"
     mycursor.execute(select_alias_statment)
     alias_results = mycursor.fetchall()

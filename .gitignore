@@ -3,3 +3,6 @@ mypsw.py
 
 Output/prices/*.*
 Output/predict/*.*
+
+Output/prices/SplitCSVFile/*
+Output/SplitCSVFile.rar

@@ -32,13 +32,18 @@ def get_prediction(symbol_id_list, prediction_file):
             print("读取预测结果失败！")
             return None
 
-        mydb = mysql.connector.connect(
-            host=mypsw.wechatadmin.host, 
-            user=mypsw.wechatadmin.user, 
-            passwd=mypsw.wechatadmin.passwd, 
-            database=mypsw.wechatadmin.database, 
-            auth_plugin='mysql_native_password')
-        mycursor = mydb.cursor()
+        try:
+            mydb = mysql.connector.connect(
+                host=mypsw.wechatadmin.host, 
+                user=mypsw.wechatadmin.user, 
+                passwd=mypsw.wechatadmin.passwd, 
+                database=mypsw.wechatadmin.database, 
+                auth_plugin='mysql_native_password')
+            mycursor = mydb.cursor()
+        except:
+            print("数据库连接失败！")
+            return None
+
         insert_sql = "INSERT INTO predictions ("  \
             "SYMBOL, TIME, DAY01, DAY02, DAY03, DAY04,  DAY05, DAY06, DAY07, DAY08, DAY09, DAY10" \
             ") VALUES (" \
