@@ -19,14 +19,18 @@ def read_prices():
     except:
         print("数据库连接失败！")
         return None
-    select_alias_statment = "SELECT DISTINCT symbol FROM symbol_alias order by RAND()"
+    select_alias_statment = "SELECT DISTINCT symbol, MARKET_TYPE FROM symbol_alias order by RAND()"
     mycursor.execute(select_alias_statment)
-    alias_results = mycursor.fetchall()
+    try:
+        alias_results = mycursor.fetchall()
+    except:
+        print("数据库连接失败！")
+        return None
     if len(alias_results) == 0:
         ret_message = "市场表symbol_alias无数据！请先维护！" 
         return ret_message
     
-    startdays = 200
+    startdays = 300
     inputdays = 120
 
     url = "https://cn.investing.com/instruments/HistoricalDataAjax"
@@ -52,7 +56,13 @@ def read_prices():
     price_file.truncate()
     symbol_id_list = []
     for alias_result in alias_results:
-        payload = "action=historical_data&curr_id="+ alias_result[0] +"&end_date=" + end_date_str + "&header=null&interval_sec=Daily&smlID=25609848&sort_col=date&sort_ord=DESC&st_date=" + st_date_str
+        if alias_result[1] == '外汇':
+            smlID_str = str(int(alias_result[0]) + 106681)
+        else:
+            smlID_str = '25609848'
+            
+        payload = "action=historical_data&curr_id="+ alias_result[0] +"&end_date=" + end_date_str + "&header=null&interval_sec=Daily&smlID=" + smlID_str + "&sort_col=date&sort_ord=DESC&st_date=" + st_date_str
+        
         response = None
         #for response_index in range(2):
         try:
@@ -78,11 +88,11 @@ def read_prices():
             if price_count > inputdays:
                 break
             price = float(str(cell_matchs.group(2)).replace(",",""))
-            if price_count == 1 or price != price_list[price_count-2]:
-                price_list.append(price)
-                insert_val.append((alias_result[0], inputdays - price_count + 1, price))
-            else:
-                price_count -= 1
+            #if price_count == 1 or price != price_list[price_count-2]:
+            price_list.append(price)
+            insert_val.append((alias_result[0], inputdays - price_count + 1, price))
+            #else:
+            #    price_count -= 1
         if len(price_list) != inputdays:
             print(len(price_list))
             continue
@@ -93,11 +103,12 @@ def read_prices():
             ") VALUES (" \
             "%s, %s, %s) " \
             "ON DUPLICATE KEY UPDATE DAY_INDEX=VALUES(DAY_INDEX),PRICE=VALUES(PRICE)"
+        try:
+            mycursor.executemany(insert_sql, insert_val)
 
-        mycursor.executemany(insert_sql, insert_val)
-
-        mydb.commit()    # 数据表内容有更新，必须使用到该语句
-
+            mydb.commit()    # 数据表内容有更新，必须使用到该语句
+        except:
+            return
         symbol_id_list.append(alias_result[0])
         print(price_list)
         max_price = max(price_list)

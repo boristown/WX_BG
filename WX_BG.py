@@ -26,7 +26,10 @@ while True:
     print("正在读取价格……")
     #读取价格并生成输入数据
     symbol_id_list = prices.read_prices()
-    if len(symbol_id_list) == 0:
+    try:
+        if len(symbol_id_list) == 0:
+            continue
+    except:
         continue
     print("正在执行预测……")
     # 预测并读取结果 
