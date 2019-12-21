@@ -19,7 +19,9 @@ def read_prices():
     except:
         print("数据库连接失败！")
         return None
-    select_alias_statment = "SELECT DISTINCT symbol, MARKET_TYPE FROM symbol_alias order by RAND()"
+    select_alias_statment = "SELECT DISTINCT symbol, MARKET_TYPE FROM symbol_alias  " \
+    " where MARKET_ORDER > 0 " \
+    " order by RAND()"
     mycursor.execute(select_alias_statment)
     try:
         alias_results = mycursor.fetchall()
@@ -33,11 +35,12 @@ def read_prices():
     startdays = 300
     inputdays = 120
 
-    url = "https://cn.investing.com/instruments/HistoricalDataAjax"
+    #url = "https://cn.investing.com/instruments/HistoricalDataAjax"
+    url = "https://www.investing.com/instruments/HistoricalDataAjax"
 
     headers = {
         'accept': "text/plain, */*; q=0.01",
-        'origin': "https://cn.investing.com",
+        'origin': "https://www.investing.com",
         'x-requested-with': "XMLHttpRequest",
         'user-agent': "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36",
         'content-type': "application/x-www-form-urlencoded",
@@ -45,8 +48,10 @@ def read_prices():
         'postman-token': "17db1643-3ef6-fa9e-157b-9d5058f391e4"
         }
 
-    st_date_str = (datetime.datetime.utcnow() + datetime.timedelta(days = -startdays)).strftime("%Y-%m-%d").replace("-","%2F")
-    end_date_str = (datetime.datetime.utcnow()).strftime("%Y-%m-%d").replace("-","%2F")
+    dateformat = "%m-%d-%Y"
+
+    st_date_str = (datetime.datetime.utcnow() + datetime.timedelta(days = -startdays)).strftime(dateformat).replace("-","%2F")
+    end_date_str = (datetime.datetime.utcnow()).strftime(dateformat).replace("-","%2F")
     
     symbol_index = 0
     time_text =  datetime.datetime.utcnow().strftime("%Y%m%d")
@@ -57,12 +62,15 @@ def read_prices():
     symbol_id_list = []
     for alias_result in alias_results:
         if alias_result[1] == '外汇':
-            smlID_str = str(int(alias_result[0]) + 106681)
+            smlID_str = '1072600' #str(int(alias_result[0]) + 106681)
         else:
-            smlID_str = '25609848'
-            
+            smlID_str = '25609849'
         payload = "action=historical_data&curr_id="+ alias_result[0] +"&end_date=" + end_date_str + "&header=null&interval_sec=Daily&smlID=" + smlID_str + "&sort_col=date&sort_ord=DESC&st_date=" + st_date_str
-        
+
+        #if alias_result[1] == '外汇':
+        print(alias_result[1] + ' ' + str(len(symbol_id_list)) + '/' + str(len(alias_results)))
+        #  print(payload)
+
         response = None
         #for response_index in range(2):
         try:
@@ -78,7 +86,7 @@ def read_prices():
         table_pattern = r'<tr>.+?<td.+?data-real-value="([^><"]+?)".+?</td>' \
             '.+?data-real-value="([^><"]+?)".+?</td>.+?data-real-value="([^><"]+?)".+?</td>'  \
             '.+?data-real-value="([^><"]+?)".+?</td>.+?data-real-value="([^><"]+?)".+?</td>'  \
-            '.+?data-real-value="([^><"]+?)".+?</td>'
+            '.+?</tr>'
         row_matchs = re.finditer(table_pattern,response.text,re.S)
         price_list = []
         price_count = 0
@@ -94,7 +102,8 @@ def read_prices():
             #else:
             #    price_count -= 1
         if len(price_list) != inputdays:
-            print(len(price_list))
+            if alias_result[1] == '外汇':
+              print(len(price_list))
             continue
         insert_val.reverse()
 
@@ -109,19 +118,20 @@ def read_prices():
             mydb.commit()    # 数据表内容有更新，必须使用到该语句
         except:
             return
-        symbol_id_list.append(alias_result[0])
-        print(price_list)
+        #if alias_result[1] == '外汇':
+        #  print(price_list)
         max_price = max(price_list)
         min_price = min(price_list)
         center_price = (max_price + min_price) / 2
         range_price = max_price - min_price
         if range_price <= 0:
             continue
+        symbol_id_list.append(alias_result[0])
         symbol_index+=1
         if symbol_index > 1:
             price_file.write("\n")
         price_line = ""
-        print( "%d\t%s" % (symbol_index, alias_result[0])  )
+        #print( "%d\t%s" % (symbol_index, alias_result[0])  )
         for i in range(len(price_list)):
             price_list[i] -= center_price
             price_list[i] /= range_price
