@@ -18,8 +18,9 @@ def get_prediction(symbol_id_list, prediction_file):
         for row in csvreader:
             #row = linetext.split(',')
             insert_val.append((
-                                 symbol_id_list[predict_index], 
-                                 datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
+                                 symbol_id_list[predict_index][0], 
+                                 symbol_id_list[predict_index][1], 
+                                 #datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
                                  row[1], row[3], row[5], row[7], row[9], row[11], row[13], row[15], row[17], row[19]
                                  ))
             predict_index += 1
@@ -64,6 +65,6 @@ def get_prediction(symbol_id_list, prediction_file):
 
         mydb.commit()    # 数据表内容有更新，必须使用到该语句
 
-        print(mycursor.rowcount, "记录插入成功。")
+        print(mycursor.rowcount, "记录更新成功。")
 
     return None

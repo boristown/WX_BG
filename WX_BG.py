@@ -22,7 +22,7 @@ while True:
     for predict_file in predict_files:
         os.remove(predict_file)
 
-    time.sleep(3)
+    time.sleep(10)
     print("正在读取价格……")
     #读取价格并生成输入数据
     symbol_id_list = prices.read_prices()

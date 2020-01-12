@@ -7,3 +7,6 @@ Output/predict/*.*
 Output/prices/SplitCSVFile/*
 Output/SplitCSVFile.rar
 Output/predict/all_00/part-0001.part
+*.pyc
+*.pyc
+.vs/WX_BG/v16/.suo

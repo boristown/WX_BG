@@ -19,22 +19,32 @@ def read_prices():
     except:
         print("数据库连接失败！")
         return None
+
+    '''
     select_alias_statment = "SELECT DISTINCT symbol, MARKET_TYPE FROM symbol_alias  " \
     " where MARKET_ORDER > 0 " \
     " order by RAND()"
+    '''
+
+    select_alias_statment = "SELECT * FROM price " \
+    " order by RAND()"
     mycursor.execute(select_alias_statment)
     try:
-        alias_results = mycursor.fetchall()
+        #alias_results = mycursor.fetchall()
+        price_results = mycursor.fetchall()
     except:
         print("数据库连接失败！")
         return None
-    if len(alias_results) == 0:
-        ret_message = "市场表symbol_alias无数据！请先维护！" 
+    #if len(alias_results) == 0:
+    if len(price_results) == 0:
+        #ret_message = "市场表symbol_alias无数据！请先维护！" 
+        ret_message = "价格表price无数据！请先运行爬虫程序prices.py" 
         return ret_message
     
     startdays = 300
     inputdays = 120
 
+    '''
     #url = "https://cn.investing.com/instruments/HistoricalDataAjax"
     url = "https://www.investing.com/instruments/HistoricalDataAjax"
 
@@ -52,7 +62,8 @@ def read_prices():
 
     st_date_str = (datetime.datetime.utcnow() + datetime.timedelta(days = -startdays)).strftime(dateformat).replace("-","%2F")
     end_date_str = (datetime.datetime.utcnow()).strftime(dateformat).replace("-","%2F")
-    
+    '''
+
     symbol_index = 0
     time_text =  datetime.datetime.utcnow().strftime("%Y%m%d")
     price_filename_txt = os.path.join('Output/prices/part-WX_' + time_text + '.txt')
@@ -60,7 +71,9 @@ def read_prices():
     price_file = open(price_filename_txt, "w", encoding="utf-8")
     price_file.truncate()
     symbol_id_list = []
-    for alias_result in alias_results:
+    # for alias_result in alias_results:
+    for price_result in price_results:
+        '''
         if alias_result[1] == '外汇':
             smlID_str = '1072600' #str(int(alias_result[0]) + 106681)
         else:
@@ -118,15 +131,20 @@ def read_prices():
             mydb.commit()    # 数据表内容有更新，必须使用到该语句
         except:
             return
+        '''
         #if alias_result[1] == '外汇':
         #  print(price_list)
+        price_list = []
+        for price_index in range(inputdays):
+            price_list.append(float(price_result[price_index+2]))
         max_price = max(price_list)
         min_price = min(price_list)
         center_price = (max_price + min_price) / 2
         range_price = max_price - min_price
         if range_price <= 0:
             continue
-        symbol_id_list.append(alias_result[0])
+        #symbol_id_list.append(alias_result[0])
+        symbol_id_list.append((price_result[0], price_result[1]))
         symbol_index+=1
         if symbol_index > 1:
             price_file.write("\n")
