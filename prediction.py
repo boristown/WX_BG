@@ -21,7 +21,8 @@ def get_prediction(symbol_id_list, prediction_file):
                                  symbol_id_list[predict_index][0], 
                                  symbol_id_list[predict_index][1], 
                                  #datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
-                                 row[1], row[3], row[5], row[7], row[9], row[11], row[13], row[15], row[17], row[19]
+                                 #row[1], row[3], row[5], row[7], row[9], row[11], row[13], row[15], row[17], row[19]
+                                 row[1], 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5
                                  ))
             predict_index += 1
 
