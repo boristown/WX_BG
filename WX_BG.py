@@ -5,13 +5,25 @@ import glob
 import prediction
 import os
 import time
+import random
 
 #预测数据文件
 prices_file_pattern = "Output\\prices\\*.csv"
 #预测数据文件
 predict_file_pattern = "Output\\predict\\*.csv"
 
+modeStr = {0: "v1", 1:"v2"}
+
 while True:
+
+    randint = random.randint(0, 9)
+    if randint == 0:
+        modeType = 0
+    else:
+        modeType = 1
+
+    print( "mode = " + modeStr[modeType] )
+
     #删除旧的价格数据
     prices_files  = glob.glob(prices_file_pattern)
     for prices_file in prices_files:
@@ -25,7 +37,10 @@ while True:
     time.sleep(10)
     print("正在读取价格……")
     #读取价格并生成输入数据
-    symbol_id_list = prices.read_prices()
+    if modeType == 0:
+        symbol_id_list = prices.read_prices()
+    else:
+        symbol_id_list, date_list = prices.read_pricehistory()
     try:
         if len(symbol_id_list) == 0:
             continue
@@ -40,7 +55,10 @@ while True:
             continue
         print("检测到预测文件：", predict_files[0])
         time.sleep(2)
-        prediction.get_prediction(symbol_id_list, predict_files[0])
+        if modeType == 0:
+            prediction.get_prediction(symbol_id_list, predict_files[0])
+        else:
+            prediction.get_predictionhistory(symbol_id_list, date_list, predict_files[0])
         break
     print("预测执行完毕！")
     time.sleep(20)
