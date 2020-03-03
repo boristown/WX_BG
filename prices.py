@@ -180,9 +180,9 @@ def read_pricehistory(predict_batch_size):
             mycursor.executemany(update_sql, update_val)
 
             mydb.commit()    # 数据表内容有更新，必须使用到该语句
-
-            if symbol_index >= predict_batch_size:
-                break
+        print("lines=" + str(symbol_index))
+        if symbol_index >= predict_batch_size:
+            break
         #print(price_list)
     price_file.close()
     os.rename(price_filename_txt, price_filename_csv)
