@@ -14,6 +14,8 @@ predict_file_pattern = "Output\\predict\\*.csv"
 
 modeStr = {0: "v1", 1:"v2"}
 
+predict_batch_size = 10000
+
 while True:
 
     randint = random.randint(0, 9)
@@ -40,7 +42,7 @@ while True:
     if modeType == 0:
         symbol_id_list = prices.read_prices()
     else:
-        symbol_id_list, date_list = prices.read_pricehistory()
+        symbol_id_list = prices.read_pricehistory(predict_batch_size)
     try:
         if len(symbol_id_list) == 0:
             continue
@@ -58,7 +60,7 @@ while True:
         if modeType == 0:
             prediction.get_prediction(symbol_id_list, predict_files[0])
         else:
-            prediction.get_predictionhistory(symbol_id_list, date_list, predict_files[0])
+            prediction.get_predictionhistory(symbol_id_list, predict_files[0])
         break
     print("预测执行完毕！")
     time.sleep(20)
