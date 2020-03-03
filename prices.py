@@ -177,7 +177,7 @@ def read_pricehistory(predict_batch_size):
             update_sql = "UPDATE predictlog SET predictdate = %s  where SYMBOL = %s "
             update_val.append((prices_results[predict_index][1], symbol_results[0]))
 
-            mycursor.executemany(insert_sql, update_val)
+            mycursor.executemany(update_sql, update_val)
 
             mydb.commit()    # 数据表内容有更新，必须使用到该语句
 
