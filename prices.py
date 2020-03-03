@@ -91,8 +91,8 @@ def read_pricehistory(predict_batch_size):
             database=mypsw.wechatadmin.database, 
             auth_plugin='mysql_native_password')
         mycursor = mydb.cursor()
-    except:
-        print("数据库连接失败！")
+    except Exception as e:
+        print("数据库连接失败：" + e)
         return None
 
     db_offset = 0
@@ -103,8 +103,8 @@ def read_pricehistory(predict_batch_size):
     try:
         #alias_results = mycursor.fetchall()
         symbols_results = mycursor.fetchall()
-    except:
-        print("数据库连接失败！")
+    except Exception as e:
+        print("数据库连接失败！" + e)
         return None
 
     #if len(alias_results) == 0:
@@ -145,7 +145,7 @@ def read_pricehistory(predict_batch_size):
         for predict_index in range(predict_count):
             price_list = []
             for price_index in range(inputdays):
-                price_list.append(float(prices_results[predict_index + inputdats - 1 - price_index][5]))
+                price_list.append(float(prices_results[predict_index + inputdays - 1 - price_index][5]))
             max_price = max(price_list)
             min_price = min(price_list)
             center_price = (max_price + min_price) / 2
@@ -153,7 +153,7 @@ def read_pricehistory(predict_batch_size):
             if range_price <= 0:
                 continue
             #symbol_id_list.append(alias_result[0])
-            symbol_id_list.append((prices_results[predict_index + inputdats - 1][0], prices_results[predict_index + inputdats - 1][1]))
+            symbol_id_list.append((prices_results[predict_index + inputdays - 1][0], prices_results[predict_index + inputdays - 1][1]))
             symbol_index+=1
             if symbol_index > 1:
                 price_file.write("\n")
