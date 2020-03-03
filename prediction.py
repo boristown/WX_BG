@@ -83,7 +83,7 @@ def get_predictionhistory(symbol_id_list, prediction_file):
             #row = linetext.split(',')
             update_val.append((
                                  float(row[1]),
-                                 datetime.datetime.utcnow.strftime("%Y-%m-%d %H:%M:%S"),
+                                 datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
                                  symbol_id_list[predict_index][0], 
                                  symbol_id_list[predict_index][1], 
                                  ))
