@@ -98,7 +98,7 @@ def read_pricehistory(predict_batch_size):
     db_offset = 0
 
     #Load All prices 
-    select_symbol_statment = "select symbol, predictdate FROM predictlog order by rand()"
+    select_symbol_statment = "select symbol, predictdate FROM predictlog order by predictdate asc"
     mycursor.execute(select_symbol_statment)
     try:
         #alias_results = mycursor.fetchall()
