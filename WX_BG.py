@@ -14,7 +14,7 @@ predict_file_pattern = "Output\\predict\\*.csv"
 
 modeStr = {0: "v1", 1:"v2"}
 
-predict_batch_size = 6000
+predict_batch_size = 10000
 
 while True:
 
