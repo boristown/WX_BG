@@ -98,7 +98,8 @@ def read_pricehistory(predict_batch_size):
     db_offset = 0
 
     #Load All prices 
-    select_symbol_statment = "select symbol, predictdate FROM predictlog order by predictdate asc"
+    #select_symbol_statment = "select symbol, predictdate FROM predictlog order by predictdate asc"
+    select_symbol_statment = "select symbol, predictdate FROM predictlog order by rand()"
     mycursor.execute(select_symbol_statment)
     try:
         #alias_results = mycursor.fetchall()
@@ -139,6 +140,14 @@ def read_pricehistory(predict_batch_size):
 
         predict_count = len(prices_results) - inputdays + 1
         if predict_count <= 0:
+            update_val = []
+
+            update_sql = "UPDATE predictlog SET predictdate = %s  where SYMBOL = %s "
+            update_val.append((prices_results[-1][1], symbol_results[0]))
+
+            mycursor.executemany(update_sql, update_val)
+
+            mydb.commit()    # 数据表内容有更新，必须使用到该语句
             continue
 
         #for price_results in prices_results:
@@ -180,7 +189,7 @@ def read_pricehistory(predict_batch_size):
             mycursor.executemany(update_sql, update_val)
 
             mydb.commit()    # 数据表内容有更新，必须使用到该语句
-        print("lines=" + str(symbol_index))
+        print("lines=" + str(symbol_index) + "symbol=" + symbol_results[0])
         if symbol_index >= predict_batch_size:
             break
         #print(price_list)
