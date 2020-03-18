@@ -17,13 +17,14 @@ modeStr = {0: "v1", 1:"v2"}
 predict_batch_size = 10000
 
 while True:
-
+    '''
     randint = random.randint(0, 9)
     if randint == 0:
         modeType = 0
     else:
         modeType = 1
-
+    '''
+    modeType = 1
     print( "mode = " + modeStr[modeType] )
 
     #删除旧的价格数据
