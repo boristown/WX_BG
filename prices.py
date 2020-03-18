@@ -158,7 +158,7 @@ def read_pricehistory(predict_batch_size):
                 price_list.append(float(prices_results[predict_index + inputdays - 1 - price_index][3]))
                 price_list.append(float(prices_results[predict_index + inputdays - 1 - price_index][5]))
                 price_list.append(float(prices_results[predict_index + inputdays - 1 - price_index][4]))
-            price_list = [math.log(price) for price in price_list]
+            price_list = [math.log(price) if price > 0 else 0 for price in price_list]
             max_price = max(price_list)
             min_price = min(price_list)
             center_price = (max_price + min_price) / 2
