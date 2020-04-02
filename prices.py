@@ -187,8 +187,8 @@ def read_pricehistory(predict_batch_size):
             
             update_val = []
 
-            update_sql = "UPDATE predictlog SET predictdate = %s  where SYMBOL = %s "
-            update_val.append((prices_results[predict_index][1], symbol_results[0]))
+            update_sql = "UPDATE predictlog SET predictdate = %s maxdate = %s where SYMBOL = %s "
+            update_val.append((prices_results[predict_index][1], prices_results[predict_index + inputdays - 1][1], symbol_results[0]))
 
             mycursor.executemany(update_sql, update_val)
 
