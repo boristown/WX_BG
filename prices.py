@@ -100,7 +100,7 @@ def read_pricehistory(predict_batch_size):
 
     #Load All prices 
     #select_symbol_statment = "select symbol, predictdate FROM predictlog order by predictdate asc"
-    select_symbol_statment = "select symbol, predictdate FROM predictlog order by rand()"
+    select_symbol_statment = "select symbol, predictdate, loadingdate FROM predictlog order by rand()"
     mycursor.execute(select_symbol_statment)
     try:
         #alias_results = mycursor.fetchall()
@@ -129,8 +129,14 @@ def read_pricehistory(predict_batch_size):
     for symbol_results in symbols_results:
         #if alias_result[1] == '外汇':
         #  print(price_list)
-
-        select_price_statment = "select * FROM pricehistory where symbol = '" + symbol_results[0] + "' and date >= '"  + symbol_results[1].strftime("%Y-%m-%d") + "'  order by symbol, date"
+        sec =int(time.time())
+        if sec % 5 == 0:
+            datefield = 'loadingdate'
+            datefieldindex = 2
+        else:
+            datefield = 'predictdate'
+            datefieldindex = 1
+        select_price_statment = "select * FROM pricehistory where symbol = '" + symbol_results[0] + "' and date >= '"  + symbol_results[datefieldindex].strftime("%Y-%m-%d") + "'  order by symbol, date"
         mycursor.execute(select_price_statment)
 
         try:
@@ -142,8 +148,7 @@ def read_pricehistory(predict_batch_size):
         predict_count = len(prices_results) - inputdays + 1
         if predict_count <= 0:
             update_val = []
-
-            update_sql = "UPDATE predictlog SET predictdate = %s  where SYMBOL = %s "
+            update_sql = "UPDATE predictlog SET " + datefield + " = %s  where SYMBOL = %s "
             update_val.append((prices_results[-1][1], symbol_results[0]))
 
             mycursor.executemany(update_sql, update_val)
@@ -187,13 +192,13 @@ def read_pricehistory(predict_batch_size):
             
             update_val = []
 
-            update_sql = "UPDATE predictlog SET predictdate = %s, maxdate = %s where SYMBOL = %s "
-            update_val.append((prices_results[predict_index][1], prices_results[predict_index + inputdays - 1][1], symbol_results[0]))
+            update_sql = "UPDATE predictlog SET " + datefield + " = %s, maxdate = %s where SYMBOL = %s "
+            update_val.append((prices_results[predict_index][datefieldindex], prices_results[predict_index + inputdays - 1][1], symbol_results[0]))
 
             mycursor.executemany(update_sql, update_val)
 
             mydb.commit()    # 数据表内容有更新，必须使用到该语句
-        print("lines=" + str(symbol_index) + "symbol=" + symbol_results[0])
+        print(str(datetime.datetime.now()) + "lines=" + str(symbol_index) + "symbol=" + symbol_results[0])
         if symbol_index >= predict_batch_size:
             break
         #print(price_list)
