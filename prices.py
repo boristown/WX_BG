@@ -145,6 +145,9 @@ def read_pricehistory(predict_batch_size):
             print("symbol:" + symbol_results[0] + ", no data!")
             continue
 
+        if len(prices_results) == 0:
+            continue
+
         predict_count = len(prices_results) - inputdays + 1
         if predict_count <= 0:
             update_val = []
