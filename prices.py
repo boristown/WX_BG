@@ -149,7 +149,7 @@ def read_pricehistory(predict_batch_size):
         if predict_count <= 0:
             update_val = []
             update_sql = "UPDATE predictlog SET " + datefield + " = %s  where SYMBOL = %s "
-            update_val.append((prices_results[-1][1], symbol_results[0]))
+            update_val.append((prices_results[-1][datefieldxindex], symbol_results[0]))
 
             mycursor.executemany(update_sql, update_val)
 
