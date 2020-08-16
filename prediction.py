@@ -111,9 +111,12 @@ def get_predictionhistory(symbol_id_list, prediction_file):
 
         update_sql = "UPDATE pricehistory SET F = %s, PREDICTTIME = %s where SYMBOL = %s and date = %s"
 
-        mycursor.executemany(update_sql, update_val)
-
-        mydb.commit()    # 数据表内容有更新，必须使用到该语句
+        try:
+            mycursor.executemany(update_sql, update_val)
+            mydb.commit()    # 数据表内容有更新，必须使用到该语句
+        except Exception as e:
+            print("数据库连接失败：" + e)
+            return None
 
         print(mycursor.rowcount, "记录更新成功。")
 

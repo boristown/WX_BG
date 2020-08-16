@@ -153,10 +153,12 @@ def read_pricehistory(predict_batch_size):
             update_val = []
             update_sql = "UPDATE predictlog SET " + datefield + " = %s  where SYMBOL = %s "
             update_val.append((prices_results[-1][1], symbol_results[0]))
-
-            mycursor.executemany(update_sql, update_val)
-
-            mydb.commit()    # 数据表内容有更新，必须使用到该语句
+            try:
+                mycursor.executemany(update_sql, update_val)
+                mydb.commit()    # 数据表内容有更新，必须使用到该语句
+            except Exception as e:
+                print("数据库连接失败：" + e)
+                return None
             continue
 
         #for price_results in prices_results:
@@ -197,10 +199,14 @@ def read_pricehistory(predict_batch_size):
 
             update_sql = "UPDATE predictlog SET " + datefield + " = %s, maxdate = %s where SYMBOL = %s "
             update_val.append((prices_results[predict_index][1], prices_results[predict_index + inputdays - 1][1], symbol_results[0]))
+            
+            try:
+                mycursor.executemany(update_sql, update_val)
+                mydb.commit()    # 数据表内容有更新，必须使用到该语句
+            except Exception as e:
+                print("数据库连接失败：" + e)
+                return None
 
-            mycursor.executemany(update_sql, update_val)
-
-            mydb.commit()    # 数据表内容有更新，必须使用到该语句
         print(str(datetime.datetime.now()) + "lines=" + str(symbol_index) + "symbol=" + symbol_results[0])
         if symbol_index >= predict_batch_size:
             break
