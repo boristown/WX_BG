@@ -93,7 +93,7 @@ def read_pricehistory(predict_batch_size):
             auth_plugin='mysql_native_password')
         mycursor = mydb.cursor()
     except Exception as e:
-        print("数据库连接失败：" + e)
+        print("数据库连接失败：" + str(e))
         return None
 
     db_offset = 0
@@ -106,7 +106,7 @@ def read_pricehistory(predict_batch_size):
         #alias_results = mycursor.fetchall()
         symbols_results = mycursor.fetchall()
     except Exception as e:
-        print("数据库连接失败！" + e)
+        print("数据库连接失败！" + str(e))
         return None
 
     #if len(alias_results) == 0:
@@ -157,7 +157,7 @@ def read_pricehistory(predict_batch_size):
                 mycursor.executemany(update_sql, update_val)
                 mydb.commit()    # 数据表内容有更新，必须使用到该语句
             except Exception as e:
-                print("数据库连接失败：" + e)
+                print("数据库连接失败：" + str(e))
                 return None
             continue
 
@@ -204,7 +204,7 @@ def read_pricehistory(predict_batch_size):
                 mycursor.executemany(update_sql, update_val)
                 mydb.commit()    # 数据表内容有更新，必须使用到该语句
             except Exception as e:
-                print("数据库连接失败：" + e)
+                print("数据库连接失败：" + str(e))
                 return None
 
         print(str(datetime.datetime.now()) + "lines=" + str(symbol_index) + "symbol=" + symbol_results[0])
