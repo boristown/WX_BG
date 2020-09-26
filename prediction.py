@@ -115,7 +115,7 @@ def get_predictionhistory(symbol_id_list, prediction_file):
             mycursor.executemany(update_sql, update_val)
             mydb.commit()    # 数据表内容有更新，必须使用到该语句
         except Exception as e:
-            print("数据库连接失败：" + e)
+            print("数据库连接失败：" + str(e))
             return None
 
         print(mycursor.rowcount, "记录更新成功。")
