@@ -77,15 +77,20 @@ def get_predictionhistory(symbol_id_list, prediction_file, prediction_file_secon
             csvreader_second = csv.reader(fcsv_second)
             prices_batch_size = len(symbol_id_list)
             update_val = []
+            second_val = []
             predict_index = 0
             print("准备读取预测结果……")
             time.sleep(5)
             #for linetext in fcsv:
+            for row in csvreader_second:
+                #row = linetext.split(',')
+                second_val.append(float(row[1]))
+
             for row in csvreader:
                 #row = linetext.split(',')
                 update_val.append((
                                      float(row[1]),
-                                     float(csvreader_second[predict_index][1]),
+                                     second_val[predict_index],
                                      datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
                                      symbol_id_list[predict_index][0], 
                                      symbol_id_list[predict_index][1], 
