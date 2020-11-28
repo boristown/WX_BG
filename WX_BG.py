@@ -70,7 +70,7 @@ while True:
             continue
         print("检测到预测文件：", predict_files[0])
         predict_files_second  = glob.glob(predict_file_second_pattern)
-        if len(predict_file_second) == 0:
+        if len(predict_files_second) == 0:
             continue
         print("检测到预测文件2：", predict_files_second[0])
         time.sleep(2)
