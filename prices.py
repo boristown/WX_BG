@@ -215,7 +215,7 @@ def read_pricehistory(predict_batch_size):
 
             update_sql = "UPDATE predictlog SET " + datefield + " = %s, maxdate = %s where SYMBOL = %s "
             if datefield == 'enddate_v7':
-                update_val.append((prices_results[predict_index + inputdays - 1][1], 'maxdate', symbol_results[0]))
+                update_val.append((prices_results[inputdays - 1][1], 'maxdate', symbol_results[0]))
             else:
                 update_val.append((prices_results[predict_index][1], prices_results[predict_index + inputdays - 1][1], symbol_results[0]))
             try:
