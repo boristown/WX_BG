@@ -66,12 +66,10 @@ while True:
     while True:
         time.sleep(1)
         predict_files  = glob.glob(predict_file_pattern)
-        if len(predict_files) == 0:
+        predict_files_second  = glob.glob(predict_file_second_pattern)
+        if len(predict_files) == 0 or len(predict_files_second) == 0:
             continue
         print("检测到预测文件：", predict_files[0])
-        predict_files_second  = glob.glob(predict_file_second_pattern)
-        if len(predict_files_second) == 0:
-            continue
         print("检测到预测文件2：", predict_files_second[0])
         time.sleep(2)
         if modeType == 0:
